@@ -43,14 +43,18 @@ class Authentic {
 
   private void drawMask(PGraphics g) {
     g.beginDraw();
+    g.pushStyle();
     g.fill(0);
     g.rect(0, 0, width, height);
     g.fill(255);
     g.rect(0, 0, width, height, cornerRadius);
+    g.popStyle();
     g.endDraw();
   }
 
   void redraw() {
+    initLetter();
+
     drawing = createGraphics(width, height, P2D);
 
     PGraphics g = drawing;
@@ -73,7 +77,9 @@ class Authentic {
     bg.mask(mask);
 
     g.beginDraw();
+    g.pushStyle();
     g.image(bg, 0, 0);
+    g.popStyle();
     g.endDraw();
   }
 
@@ -81,7 +87,7 @@ class Authentic {
     PGraphics g = createGraphics(width, height, P2D);
 
     int segmentWidth = 17;
-    int segmentHeight = 5;
+    int segmentHeight = 2;
     float lineHeight = 4;
     int numLines = floor((height + segmentHeight) / lineHeight);
     WavyLine wavyLine = new WavyLine(segmentWidth, segmentHeight);
@@ -110,7 +116,9 @@ class Authentic {
     g.mask(mask);
 
     canvas.beginDraw();
+    canvas.pushStyle();
     canvas.image(g, 0, 0);
+    canvas.popStyle();
     canvas.endDraw();
   }
 
@@ -150,11 +158,11 @@ class Authentic {
     g.mask(mask);
 
     canvas.beginDraw();
+    canvas.pushStyle();
     canvas.tint(255, 16);
     canvas.blendMode(ADD);
     canvas.image(g, 0, 0);
-    canvas.noTint();
-    canvas.blendMode(BLEND);
+    canvas.popStyle();
     canvas.endDraw();
   }
 
