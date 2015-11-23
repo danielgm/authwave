@@ -59,7 +59,9 @@ class Authentic {
 
     PGraphics g = drawing;
     drawBackground(g);
+    drawRect(g);
     drawWaveBlock(g);
+    drawClouds(g);
     drawLetter(g);
   }
 
@@ -83,43 +85,14 @@ class Authentic {
     g.endDraw();
   }
 
-  private void drawLetter(PGraphics canvas) {
-    PGraphics g = createGraphics(width, height, P2D);
-
-    int segmentWidth = 17;
-    int segmentHeight = 2;
-    float lineHeight = 4;
-    int numLines = floor((height + segmentHeight) / lineHeight);
-    WavyLine wavyLine = new WavyLine(segmentWidth, segmentHeight);
-
+  private void drawRect(PGraphics g) {
     g.beginDraw();
+    g.pushStyle();
+    g.fill(232, 152, 181, 160);
     g.noStroke();
-    g.fill(232, 152, 181);
-    g.rect(0, 0, width, height);
-    g.stroke(244, 205, 198);
-    g.strokeWeight(1);
-    g.noFill();
-    for (int i = 0; i < numLines; i++) {
-      wavyLine.draw(g, 0, i * lineHeight, width, i * lineHeight);
-    }
+    g.rect(0, 0.2 * height, 0.7 * width, 0.74 * height);
+    g.popStyle();
     g.endDraw();
-
-    PGraphics mask = createGraphics(width, height, P2D);
-    mask.beginDraw();
-    mask.fill(0);
-    mask.rect(0, 0, width, height);
-    mask.fill(255);
-    mask.textFont(letterFont);
-    mask.text(letter, 0.6 * width, 1 * height);
-    mask.endDraw();
-
-    g.mask(mask);
-
-    canvas.beginDraw();
-    canvas.pushStyle();
-    canvas.image(g, 0, 0);
-    canvas.popStyle();
-    canvas.endDraw();
   }
 
   private void drawWaveBlock(PGraphics canvas) {
@@ -161,6 +134,81 @@ class Authentic {
     canvas.pushStyle();
     canvas.tint(255, 16);
     canvas.blendMode(ADD);
+    canvas.image(g, 0, 0);
+    canvas.popStyle();
+    canvas.endDraw();
+  }
+
+  private void drawClouds(PGraphics canvas) {
+    PGraphics g = createGraphics(width, height, P2D);
+    PImage clouds = loadImage("clouds.jpg");
+
+    float w = clouds.width;
+    float h = clouds.height;
+
+    float drawW;
+    float drawH;
+    if (h / w > height / width) {
+      drawW = width;
+      drawH = drawW * h / w;
+    }
+    else {
+      drawH = height;
+      drawW = drawH * w / h;
+    }
+
+    g.beginDraw();
+    g.pushStyle();
+    g.imageMode(CENTER);
+    g.image(clouds, width/2, height/2, drawW, drawH);
+    g.popStyle();
+    g.endDraw();
+
+    g.mask(mask);
+
+    canvas.beginDraw();
+    canvas.pushStyle();
+    canvas.blendMode(ADD);
+    canvas.tint(32);
+    canvas.image(g, 0, 0);
+    canvas.popStyle();
+    canvas.endDraw();
+  }
+
+  private void drawLetter(PGraphics canvas) {
+    PGraphics g = createGraphics(width, height, P2D);
+
+    int segmentWidth = 17;
+    int segmentHeight = 2;
+    float lineHeight = 4;
+    int numLines = floor((height + segmentHeight) / lineHeight);
+    WavyLine wavyLine = new WavyLine(segmentWidth, segmentHeight);
+
+    g.beginDraw();
+    g.noStroke();
+    g.fill(155, 123, 203);
+    g.rect(0, 0, width, height);
+    g.stroke(168, 123, 236);
+    g.strokeWeight(1);
+    g.noFill();
+    for (int i = 0; i < numLines; i++) {
+      wavyLine.draw(g, 0, i * lineHeight, width, i * lineHeight);
+    }
+    g.endDraw();
+
+    PGraphics mask = createGraphics(width, height, P2D);
+    mask.beginDraw();
+    mask.fill(0);
+    mask.rect(0, 0, width, height);
+    mask.fill(255);
+    mask.textFont(letterFont);
+    mask.text(letter, 0.6 * width, 1 * height);
+    mask.endDraw();
+
+    g.mask(mask);
+
+    canvas.beginDraw();
+    canvas.pushStyle();
     canvas.image(g, 0, 0);
     canvas.popStyle();
     canvas.endDraw();
