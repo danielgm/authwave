@@ -3,6 +3,8 @@ int numRows;
 int margin;
 ArrayList<Authentic> authentic;
 
+FileNamer fileNamer;
+
 void setup() {
   size(800, 600, P2D);
   
@@ -17,7 +19,10 @@ void setup() {
       width - 2 * margin,
       height / numRows - 2 * margin));
   }
+
+  fileNamer = new FileNamer("output/export", "png");
 }
+
 
 void redraw() {
   for (int i = 0; i < numRows; i++) {
@@ -33,9 +38,12 @@ void draw() {
 }
 
 void keyReleased() {
-  switch (keyCode) {
+  switch (key) {
     case ' ':
       redraw();
+      break;
+    case 's':
+      save(fileNamer.next());
       break;
   }
 }
