@@ -62,6 +62,7 @@ class Authentic {
     drawRect(g);
     drawWaveBlock(g);
     drawClouds(g);
+    drawBust(g);
     drawLetter(g);
   }
 
@@ -173,6 +174,40 @@ class Authentic {
     canvas.image(g, 0, 0);
     canvas.popStyle();
     canvas.endDraw();
+  }
+
+  private void drawBust(PGraphics canvas) {
+    float scale = 1.7;
+    float jitter = 6;
+    float alpha = 128;
+
+    PGraphics g = createGraphics(width, height, P2D);
+    PImage bust = loadImage("commodus.png");
+
+    g.beginDraw();
+    g.pushStyle();
+    g.imageMode(CENTER);
+    g.image(bust, 0.2 * width, 1.3 * height, bust.width * scale, bust.height * scale);
+    g.popStyle();
+    g.endDraw();
+
+    g.mask(mask);
+
+    canvas.beginDraw();
+    canvas.pushStyle();
+    canvas.blendMode(ADD);
+    canvas.tint(255, 0, 0, alpha);
+    canvas.image(g, jitter(jitter), jitter(jitter));
+    canvas.tint(0, 255, 0, alpha);
+    canvas.image(g, jitter(jitter), jitter(jitter));
+    canvas.tint(0, 0, 255, alpha);
+    canvas.image(g, jitter(jitter), jitter(jitter));
+    canvas.popStyle();
+    canvas.endDraw();
+  }
+
+  private float jitter(float n) {
+    return random(-n, n);
   }
 
   private void drawLetter(PGraphics canvas) {
