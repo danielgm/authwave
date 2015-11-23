@@ -5,6 +5,7 @@ class Authentic {
   int y;
   int width;
   int height;
+  float cornerRadius;
 
   PGraphics drawing;
   PGraphics mask;
@@ -17,6 +18,8 @@ class Authentic {
     this.y = y;
     this.width = w;
     this.height = h;
+
+    cornerRadius = 12;
 
     init();
   }
@@ -39,7 +42,6 @@ class Authentic {
   }
 
   private void drawMask(PGraphics g) {
-    float cornerRadius = 12;
     g.beginDraw();
     g.fill(0);
     g.rect(0, 0, width, height);
@@ -52,21 +54,14 @@ class Authentic {
     drawing = createGraphics(width, height, P2D);
 
     PGraphics g = drawing;
-    drawOutline(g);
     drawBackground(g);
     drawWaveBlock(g);
     drawLetter(g);
   }
 
-  private void drawOutline(PGraphics g) {
-    g.beginDraw();
-    g.stroke(128);
-    g.noFill();
-    g.rect(0, 0, width, height);
-    g.endDraw();
-  }
-
   private void drawBackground(PGraphics g) {
+    PGraphics bg = createGraphics(width, height, P2D);
+
     LinearGradient grad = new LinearGradient(
       0.54 * width,
       1.2 * height,
@@ -74,15 +69,49 @@ class Authentic {
       -0.4 * height);
     grad.addColorStop(0, 0xffda6ab4);
     grad.addColorStop(1, 0xff4d92e8);
-    grad.fillRect(g, 0, 0, width, height, false);
+    grad.fillRect(bg, 0, 0, width, height, false);
+    bg.mask(mask);
+
+    g.beginDraw();
+    g.image(bg, 0, 0);
+    g.endDraw();
   }
 
-  private void drawLetter(PGraphics g) {
+  private void drawLetter(PGraphics canvas) {
+    PGraphics g = createGraphics(width, height, P2D);
+
+    int segmentWidth = 17;
+    int segmentHeight = 5;
+    float lineHeight = 4;
+    int numLines = floor((height + segmentHeight) / lineHeight);
+    WavyLine wavyLine = new WavyLine(segmentWidth, segmentHeight);
+
     g.beginDraw();
-    g.fill(0xff4d92e8);
-    g.textFont(letterFont);
-    g.text(letter, 0.6 * width, 1 * height);
+    g.noStroke();
+    g.fill(232, 152, 181);
+    g.rect(0, 0, width, height);
+    g.stroke(244, 205, 198);
+    g.strokeWeight(1);
+    g.noFill();
+    for (int i = 0; i < numLines; i++) {
+      wavyLine.draw(g, 0, i * lineHeight, width, i * lineHeight);
+    }
     g.endDraw();
+
+    PGraphics mask = createGraphics(width, height, P2D);
+    mask.beginDraw();
+    mask.fill(0);
+    mask.rect(0, 0, width, height);
+    mask.fill(255);
+    mask.textFont(letterFont);
+    mask.text(letter, 0.6 * width, 1 * height);
+    mask.endDraw();
+
+    g.mask(mask);
+
+    canvas.beginDraw();
+    canvas.image(g, 0, 0);
+    canvas.endDraw();
   }
 
   private void drawWaveBlock(PGraphics canvas) {
@@ -124,6 +153,8 @@ class Authentic {
     canvas.tint(255, 16);
     canvas.blendMode(ADD);
     canvas.image(g, 0, 0);
+    canvas.noTint();
+    canvas.blendMode(BLEND);
     canvas.endDraw();
   }
 
@@ -133,7 +164,6 @@ class Authentic {
   }
 
   void draw(PGraphics g) {
-    drawing.mask(mask);
     g.image(drawing, x, y);
   }
 }

@@ -8,7 +8,7 @@ FileNamer fileNamer;
 void setup() {
   size(800, 600, P2D);
   
-  numRows = 4;
+  numRows = 3;
   margin = 5;
   
   authentic = new ArrayList<Authentic>();
