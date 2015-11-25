@@ -23,7 +23,6 @@ void setup() {
   fileNamer = new FileNamer("output/export", "png");
 }
 
-
 void redraw() {
   for (int i = 0; i < numRows; i++) {
     authentic.get(i).redraw();

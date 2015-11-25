@@ -323,7 +323,7 @@ class RadialGradient {
   }
 
   private PGraphics createGradRect(float rectX0, float rectY0, int rectW, int rectH, boolean dither) {
-    PGraphics gradRect = createGraphics(rectW, rectH);
+    PGraphics gradRect = createGraphics(rectW, rectH, P2D);
 
     if (colorStops.size() == 0) {
       return gradRect;
