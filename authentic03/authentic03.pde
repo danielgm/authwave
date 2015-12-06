@@ -6,11 +6,11 @@ ArrayList<Authentic> authentic;
 FileNamer fileNamer;
 
 void setup() {
-  size(800, 600, P2D);
-  
+  size(640, 640, P2D);
+
   numRows = 3;
   margin = 5;
-  
+
   authentic = new ArrayList<Authentic>();
   for (int i = 0; i < numRows; i++) {
     authentic.add(new Authentic(

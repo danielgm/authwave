@@ -49,10 +49,10 @@ class Authentic {
   }
 
   private void initText() {
-    titleFont = createFont("HelveticaNeue-Bold", 22 * 150 / height);
+    titleFont = createFont("HelveticaNeue-Bold", 26 * 150 / height);
     heavyFont = createFont("Times", 20 * 150 / height);
-    regularFont = createFont("Helvetica", 18 * 150 / height);
-    lightFont = createFont("Helvetica-Light", 18 * 150 / height);
+    regularFont = createFont("HelveticaNeue-Bold", 18 * 150 / height);
+    lightFont = createFont("Helvetica-Light", 20 * 150 / height);
     smallFont = createFont("HelveticaNeue-Bold", 14 * 150 / height);
   }
 
@@ -74,23 +74,23 @@ class Authentic {
 
     PGraphics g = drawing;
     drawBackground(g);
-    drawCurveBlock(g);
-    drawKeyboard(g);
-    drawWaveBlock(g);
-    drawNebula(g);
+    drawInterference(g);
+    drawDolphin(g);
     drawText(g);
   }
 
   private void drawBackground(PGraphics g) {
     PGraphics bg = createGraphics(width, height, P2D);
 
-    float x0 = 0.3 * width;
-    float y0 = -0.2 * height;
+    float x0 = 0.1 * width;
+    float y0 = 0.2 * height;
     float innerRadius = 0;
-    float outerRadius = width-x0;
-    RadialGradient grad = new RadialGradient(x0, y0, innerRadius, x0 + 0.2 * width, y0, outerRadius);
-    grad.addColorStop(0, 0xfff7b86b);
-    grad.addColorStop(1, 0xfff5546b);
+    float outerRadius = 0.8 * width - x0;
+    RadialGradient grad = new RadialGradient(x0, y0, innerRadius, x0 + 0.4 * width, y0, outerRadius);
+    grad.addColorStop(0, 0xffad06a9);
+    grad.addColorStop(0.3, 0xffad06a9);
+    grad.addColorStop(0.7, 0xff461392);
+    grad.addColorStop(1, 0xff4977ab);
     grad.fillRect(bg, 0, 0, width, height, false);
     bg.mask(mask);
 
@@ -101,110 +101,66 @@ class Authentic {
     g.endDraw();
   }
 
-  private void drawCurveBlock(PGraphics g) {
+  private void drawInterference(PGraphics g) {
+    BezierFlower flower0 = new BezierFlower()
+      .numPoints(3)
+      .innerRadius(210)
+      .outerRadius(470.0)
+      .innerControlDistanceFactor(0.26649216)
+      .outerControlDistanceFactor(0.17278907)
+      .innerControlRotation(0.0)
+      .outerControlRotation(0.0);
+
+    BezierFlower flower1 = new BezierFlower()
+      .numPoints(3)
+      .innerRadius(210)
+      .outerRadius(470.0)
+      .innerControlDistanceFactor(0.26649216)
+      .outerControlDistanceFactor(0.17278907)
+      .innerControlRotation(0.0)
+      .outerControlRotation(0.0);
+
+    int numFlowers = 164;
+    float xOffset = 1.5625;
+    float yOffset = 0.0;
+    float rotationOffset = 0.049087387;
+
     g.beginDraw();
-
-    drawCurves(g, 0xffccccff);
-    drawCurves(g, 0xffccccff);
-
-    g.endDraw();
-  }
-
-  private void drawCurves(PGraphics g, color c) {
-    float centerX = 0.3 * width;
-    float centerY = -0.3 * height;
-    ConcentricEllipse e0 = new ConcentricEllipse(centerX, centerY, 100, 100);
-    ConcentricEllipse e1 = new ConcentricEllipse(centerX, centerY, 100, 100);
-    e0.widthFactor = 1.01;
-    e1.widthFactor = 1.012;
-    e0.heightRatio = 1;
-    e1.heightRatio = 1.03125;
-    e0.rotation = 1.7671459;
-    e1.rotation = 1.6444274;
-
+    g.pushMatrix();
     g.pushStyle();
 
-    g.stroke(c, 64);
-    g.strokeWeight(1);
+    g.translate(0.65 * width, 0.7 * height);
+    g.rotate(0.02 * PI);
+
     g.noFill();
+    g.stroke(0xff00a285, 210);
+    g.strokeWeight(2);
 
-    e0.draw(g);
-    e1.draw(g);
+    for (int i = 0; i < numFlowers; i++) {
+      g.pushMatrix();
+      g.scale(1.7 * i / numFlowers);
+
+      flower0.draw(g);
+
+      g.translate(xOffset, yOffset);
+      g.rotate(rotationOffset);
+
+      flower1.draw(g);
+
+      g.popMatrix();
+    }
 
     g.popStyle();
-  }
-
-  private void drawKeyboard(PGraphics g) {
-    PImage keyboard = loadImage("keyboard.jpg");
-    g.beginDraw();
-    g.pushStyle();
-
-    g.blendMode(ADD);
-    g.tint(255, 32);
-    g.image(keyboard, 0.51 * width, 0, 0.22 * width, 0.94 * height);
-
-    g.popStyle();
+    g.popMatrix();
     g.endDraw();
   }
 
-  private void drawWaveBlock(PGraphics canvas) {
-    drawWavyLines(canvas, 0);
-    drawWavyLines(canvas, random(8, 14));
-  }
-
-  private void drawWavyLines(PGraphics canvas, float slope) {
-    PGraphics g = createGraphics(width, height, P2D);
-
-    int segmentWidth = 12;
-    int segmentHeight = 2;
-    float lineHeight = 4;
-    int numLines = floor((height + segmentHeight + slope) / lineHeight);
-    WavyLine wavyLine = new WavyLine(segmentWidth, segmentHeight);
-
+  private void drawDolphin(PGraphics g) {
+    PImage dolphin = loadImage("dolphin_06_by_clipartcotttage-d7arfl9.png");
+    float scale = (float)height / dolphin.height;
     g.beginDraw();
-    g.stroke(255);
-    g.strokeWeight(0.5);
-    g.noFill();
-    for (int i = 0; i < numLines; i++) {
-      wavyLine.draw(g, 0, i * lineHeight, width, i * lineHeight - slope);
-    }
-    for (int i = 0; i < numLines; i++) {
-      wavyLine.draw(g, 0, i * lineHeight, width, i * lineHeight);
-    }
-    g.endDraw();
-
-    PGraphics mask = createGraphics(width, height, P2D);
-    mask.beginDraw();
-    mask.fill(0);
-    mask.rect(0, 0, width, height);
-    mask.fill(255);
-    mask.rect(0.46 * width, 0, 0.02 * width, 0.94 * height);
-    mask.rect(0.51 * width, 0, 0.22 * width, 0.94 * height);
-    mask.endDraw();
-    g.mask(mask);
-
-    canvas.beginDraw();
-    canvas.pushStyle();
-    canvas.tint(255, 64);
-    canvas.blendMode(ADD);
-    canvas.image(g, 0, 0);
-    canvas.popStyle();
-    canvas.endDraw();
-  }
-
-  private void drawNebula(PGraphics g) {
-    PImage nebula = loadImage("monkeyhead.jpg");
-    float scale = height / nebula.height;
-    scale = 0.5;
-
-    g.beginDraw();
-    g.pushStyle();
-
-    g.blendMode(ADD);
-    g.tint(255, 32);
-    g.image(nebula, 0.41 * width, 0, nebula.width * scale, nebula.height * scale);
-
-    g.popStyle();
+    g.tint(255);
+    g.image(dolphin, 0.39 * width, 0.3 * height, scale * dolphin.width, scale * dolphin.height);
     g.endDraw();
   }
 
@@ -217,8 +173,7 @@ class Authentic {
     drawFirstBarcode(g);
     drawSecondBarcode(g);
     drawProductKey(g);
-    drawProofOfLicense(g);
-    drawCertificateOfAuthenticity(g);
+    drawGenuineProduct(g);
     drawXLabel(g);
 
     g.popStyle();
@@ -230,44 +185,57 @@ class Authentic {
     g.textFont(titleFont);
 
     for (int i = 0; i < 4; i++) {
-      g.text("EssentialSoft Authwave 5 XT", 0.05 * width + jitter(j), 0.15 * height + jitter(j));
-      g.text("OEM Software", 0.05 * width + jitter(j), 0.25 * height + jitter(j));
+      g.text("SoftSoft Authwave 6 Extended", 0.05 * width + jitter(j), 0.16 * height + jitter(j));
+      g.text("OEM Software", 0.05 * width + jitter(j), 0.28 * height + jitter(j));
     }
   }
 
   private void drawFirstBarcode(PGraphics g) {
-    float j = 1;
+    float j = 0.5;
     String label = "FQC-" + getRandomDigits(5);
+    float margin = 4;
 
-    drawBarcode(g, 0.07 * width, 0.30 * height, 0.34 * width, 0.09 * height);
+    g.noStroke();
+    g.fill(255, 172);
+    g.rect(0.09 * width - margin, 0.70 * height - margin, 0.29 * width + margin * 2, 0.16 * height + margin * 2);
+
+    g.fill(0);
+
+    drawBarcode(g, 0.09 * width, 0.72 * height, 0.29 * width, 0.09 * height);
     g.textFont(smallFont);
 
     for (int i = 0; i < 4; i++) {
-      g.text(label, 0.07 * width + jitter(j), 0.45 * height + jitter(j));
+      g.text(label, 0.09 * width + jitter(j), 0.87 * height + jitter(j));
     }
   }
 
   private void drawProductKey(PGraphics g) {
-    float j = 1;
+    float j = 0.3;
     String productKey = getRandomAlphanumeric(5) + "-" + getRandomAlphanumeric(5) + "-" + getRandomAlphanumeric(5);
 
     g.textFont(regularFont);
 
     for (int i = 0; i < 4; i++) {
-      g.text("Product Key:", 0.08 * width + jitter(j), 0.61 * height + jitter(j));
-      g.text(productKey, 0.08 * width + jitter(j), 0.70 * height + jitter(j));
+      g.text("Product Key: " + productKey, 0.037 * width + jitter(j), 0.96 * height + jitter(j));
     }
   }
 
   private void drawSecondBarcode(PGraphics g) {
-    float j = 1;
+    float j = 0.5;
     String label = "00" + getRandomDigits(3) + "-" + getRandomDigits(3) + "-" + getRandomDigits(3) + "-" + getRandomDigits(3);
+    float margin = 4;
+
+    g.noStroke();
+    g.fill(255, 172);
+    g.rect(0.59 * width - margin, 0.77 * height - margin, 0.39 * width + margin * 2, 0.21 * height + margin * 2);
+
+    g.fill(0);
 
     g.textFont(lightFont);
-    drawBarcode(g, 0.07 * width, 0.73 * height, 0.34 * width, 0.09 * height);
+    drawBarcode(g, 0.61 * width, 0.77 * height, 0.37 * width, 0.11 * height);
 
     for (int i = 0; i < 4; i++) {
-      g.text(label, 0.14 * width + jitter(j), 0.93 * height + jitter(j));
+      g.text(label, 0.74 * width + jitter(j), 0.96 * height + jitter(j));
     }
   }
 
@@ -287,43 +255,30 @@ class Authentic {
     g.popStyle();
   }
 
-  private void drawProofOfLicense(PGraphics g) {
+  private void drawGenuineProduct(PGraphics g) {
     float j = 1;
 
     g.textFont(heavyFont);
 
     for (int i = 0; i < 4; i++) {
-      g.text("Genuine Product", 0.55 * width + jitter(j), 0.46 * height + jitter(j));
+      g.text("Genuine Product", 0.64 * width + jitter(j), 0.24 * height + jitter(j));
     }
-  }
-
-  private void drawCertificateOfAuthenticity(PGraphics g) {
-    float j = 1;
-    g.pushMatrix();
-
-    g.translate(0.95 * width, 0.1 * height);
-    g.rotate(PI/2);
-
-    for (int i = 0; i < 4; i++) {
-      g.textFont(regularFont);
-      g.text("Certificate of Authenticity", jitter(j), jitter(j));
-
-      g.textFont(smallFont);
-      g.text("Label not to be", 12 + jitter(j), 24 + jitter(j));
-      g.text("sold separately", 12 + jitter(j), 40 + jitter(j));
-    }
-
-    g.popMatrix();
   }
 
   private void drawXLabel(PGraphics g) {
     float j = 1;
     String label = "X" + getRandomDigits(2) + "-" + getRandomDigits(5);
 
+    g.pushMatrix();
+    g.translate(0.97 * width, 0.63 * height);
+    g.rotate(-PI/2);
+
     for (int i = 0; i < 4; i++) {
       g.textFont(lightFont);
-      g.text(label, 0.81 * width + jitter(j), 0.88 * height + jitter(j));
+      g.text(label, jitter(j), jitter(j));
     }
+
+    g.popMatrix();
   }
 
   private String getRandomDigits(int n) {
@@ -348,7 +303,7 @@ class Authentic {
   }
 
   void draw(PGraphics g) {
-    drawing.mask(mask);
+    //drawing.mask(mask);
     g.image(drawing, x, y);
   }
 }
