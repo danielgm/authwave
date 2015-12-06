@@ -156,11 +156,26 @@ class Authentic {
   }
 
   private void drawDolphin(PGraphics g) {
+    PImage background = loadImage("dolphin_06_by_clipartcotttage-d7arfl9-background.png");
     PImage dolphin = loadImage("dolphin_06_by_clipartcotttage-d7arfl9.png");
     float scale = (float)height / dolphin.height;
+    float j = 3;
+    int alpha = 160;
+
     g.beginDraw();
-    g.tint(255);
-    g.image(dolphin, 0.39 * width, 0.3 * height, scale * dolphin.width, scale * dolphin.height);
+    g.pushStyle();
+    g.tint(255, 128);
+    g.image(background, 0.39 * width, 0.3 * height, scale * dolphin.width, scale * dolphin.height);
+    g.blendMode(ADD);
+    g.tint(0, 196, 196, alpha);
+    g.image(dolphin, 0.39 * width + jitter(j), 0.3 * height + jitter(j), scale * dolphin.width, scale * dolphin.height);
+    g.tint(196, 196, 0, alpha);
+    g.image(dolphin, 0.39 * width + jitter(j), 0.3 * height + jitter(j), scale * dolphin.width, scale * dolphin.height);
+    g.tint(0, 0, 255, alpha);
+    g.image(dolphin, 0.39 * width + jitter(j), 0.3 * height + jitter(j), scale * dolphin.width, scale * dolphin.height);
+    g.tint(128, 255, 0, alpha);
+    g.image(dolphin, 0.39 * width + jitter(j*2), 0.3 * height + jitter(j*2), scale * dolphin.width, scale * dolphin.height);
+    g.popStyle();
     g.endDraw();
   }
 
